@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">AssignmentApplication</string>
+    <string name="recipee_list_search_hint">Start typing to search</string>
+</resources>

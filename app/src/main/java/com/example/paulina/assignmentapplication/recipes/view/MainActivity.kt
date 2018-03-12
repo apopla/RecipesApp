@@ -2,10 +2,8 @@ package com.example.paulina.assignmentapplication.recipes.view
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v7.widget.AppCompatEditText
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
-import android.view.MotionEvent
 import android.view.View
 import com.example.paulina.assignmentapplication.MainModule
 import com.example.paulina.assignmentapplication.R
@@ -13,16 +11,13 @@ import com.example.paulina.assignmentapplication.recipes.adapter.RecipesListAdap
 import com.example.paulina.assignmentapplication.recipes.contract.RecipeContract
 import com.example.paulina.assignmentapplication.recipes.di.RecipesModule
 import com.example.paulina.assignmentapplication.recipes.presenter.RecipePresenter
-import com.example.paulina.assignmentapplication.recipes.provider.RecipesRealmProvider
 import com.example.paulina.assignmentapplication.recipes.realm_model.RealmRecipe
 import com.jakewharton.rxbinding2.widget.textChanges
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), RecipeContract.View {

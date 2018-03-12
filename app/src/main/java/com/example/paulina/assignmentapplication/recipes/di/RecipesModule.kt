@@ -22,9 +22,6 @@ class RecipesModule(private val activity: MainActivity) {
     @Provides
     fun providePresenter(impl: RecipePresenter): RecipeContract.Presenter= impl
 
-/*    @Provides
-    fun provideAdapter(impl: RecipesListAdapter) = impl*/
-
     @Provides
     fun provideProvider(impl: RecipesProvider): RecipeContract.Provider = impl
 

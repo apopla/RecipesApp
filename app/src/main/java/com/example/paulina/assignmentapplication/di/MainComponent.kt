@@ -2,6 +2,7 @@ package com.example.paulina.assignmentapplication.di
 
 import android.app.Application
 import com.example.paulina.assignmentapplication.network.ConnectionModule
+import com.example.paulina.assignmentapplication.realm.DbModule
 import com.example.paulina.assignmentapplication.recipes.di.RecipesComponent
 import com.example.paulina.assignmentapplication.recipes.di.RecipesModule
 import dagger.BindsInstance
@@ -13,7 +14,7 @@ import javax.inject.Singleton
  * Created by Paulina on 2018-03-08.
  */
 @Singleton
-@Component(modules = arrayOf(ConnectionModule::class))
+@Component(modules = arrayOf(ConnectionModule::class, DbModule::class))
 interface MainComponent {
 
     fun plusRecipesListComponent(recipesListModule: RecipesModule): RecipesComponent

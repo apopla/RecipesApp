@@ -2,13 +2,9 @@ package com.example.paulina.assignmentapplication.recipes.presenter
 
 import android.util.Log
 import com.example.paulina.assignmentapplication.recipes.contract.RecipeContract
-import com.example.paulina.assignmentapplication.recipes.converter.RealmConverter
 import com.example.paulina.assignmentapplication.recipes.provider.RecipesProvider
-import com.example.paulina.assignmentapplication.recipes.provider.RecipesRealmProvider
-import com.example.paulina.assignmentapplication.recipes.realm_model.RealmRecipe
 import com.example.paulina.assignmentapplication.recipes.realm_model.RealmRecipes
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -24,7 +20,6 @@ class RecipePresenter @Inject constructor() : RecipeContract.Presenter {
     private var view: RecipeContract.View? = null
     @Inject
     lateinit var provider: RecipesProvider
-    var realmConverter: RealmConverter = RealmConverter()
 
     private var recipesDisposable: Disposable? = null
 
@@ -39,7 +34,7 @@ class RecipePresenter @Inject constructor() : RecipeContract.Presenter {
 
     override fun searchRecipes(fraze: String): Observable<RealmRecipes> {
         Log.d("Presenter", fraze)
-        return provider.getRecipesByFraze(fraze)
+        return provider.getRecipesByFrazeFromDb(fraze)
     }
 
     override fun getRecipes() {
@@ -48,7 +43,7 @@ class RecipePresenter @Inject constructor() : RecipeContract.Presenter {
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { view?.showLoader(true) }
                 .subscribe({ r ->
-                    realmConverter.saveRecipesToRealmRecipes(r)
+                    provider.saveRecipesToDb(r)
                             .subscribeOn(AndroidSchedulers.mainThread())
                             .subscribe {
                                 provider.getRecepiesFromDb()

@@ -1,23 +1,47 @@
-package com.example.paulina.assignmentapplication.recipes.converter
+package com.example.paulina.assignmentapplication.realm
 
 import com.example.paulina.assignmentapplication.recipes.model.Element
 import com.example.paulina.assignmentapplication.recipes.model.ImageInfo
 import com.example.paulina.assignmentapplication.recipes.model.Ingredient
 import com.example.paulina.assignmentapplication.recipes.model.Recipe
-import com.example.paulina.assignmentapplication.recipes.realm_model.RealmElement
-import com.example.paulina.assignmentapplication.recipes.realm_model.RealmImageInfo
-import com.example.paulina.assignmentapplication.recipes.realm_model.RealmIngredient
-import com.example.paulina.assignmentapplication.recipes.realm_model.RealmRecipe
+import com.example.paulina.assignmentapplication.recipes.realm_model.*
 import io.reactivex.Completable
+import io.reactivex.Observable
+import io.reactivex.Single
+import io.realm.Case
 import io.realm.Realm
 import io.realm.RealmList
+import javax.inject.Inject
+
 
 /**
  * Created by Paulina on 2018-03-09.
  */
-class RealmConverter {
+class RecipesRealmProvider @Inject constructor(){
 
-    val realm = Realm.getDefaultInstance()
+    var realm = Realm.getDefaultInstance()
+
+
+    fun getRecipesFromDb (): Single<List<RealmRecipe>>{
+        realm = Realm.getDefaultInstance()
+        val results = realm.where(RealmRecipe::class.java).findAll()
+        return Single.just(results.toList())
+    }
+
+    fun checkIfDbIsEmpty(): Boolean{
+        val results = realm.where(RealmRecipe::class.java).findAll()
+        return results==null || results.isEmpty()
+    }
+
+    fun getRecipesFromDbByFraze(fraze: String): Observable<RealmRecipes>{
+        val resultsByTitle = realm.where(RealmRecipe::class.java).contains("title", fraze, Case.INSENSITIVE).findAll()
+        val resultsByIngredient = realm.where(RealmRecipe::class.java).contains("ingredients.name", fraze, Case.INSENSITIVE).findAll()
+        var combined = ArrayList<RealmRecipe>()
+        combined.addAll(resultsByIngredient.toList())
+        combined.addAll(resultsByTitle.toList())
+        var realmRecipes = RealmRecipes(combined)
+        return Observable.just(realmRecipes)
+    }
 
     fun saveRecipesToRealmRecipes(recipes: List<Recipe>): Completable {
         realm.beginTransaction()
@@ -38,7 +62,7 @@ class RealmConverter {
         return Completable.complete()
     }
 
-    private fun convertIngredientsToRealmIngredients(ingredients: List<Ingredient>): RealmList<RealmIngredient>{
+    private fun convertIngredientsToRealmIngredients(ingredients: List<Ingredient>): RealmList<RealmIngredient> {
         var realmList = RealmList<RealmIngredient>()
         for(ingredient in ingredients){
             var realmIngredient = RealmIngredient()
@@ -51,7 +75,7 @@ class RealmConverter {
         return realmList
     }
 
-    private fun convertElementsToRealmElements(elements: List<Element>): RealmList<RealmElement>{
+    private fun convertElementsToRealmElements(elements: List<Element>): RealmList<RealmElement> {
         var realmList = RealmList<RealmElement>()
         for(element in elements){
             var realmElement = RealmElement()
@@ -63,7 +87,7 @@ class RealmConverter {
         return realmList
     }
 
-    private fun convertImageInfosToRealmImagesInfo(images: List<ImageInfo>): RealmList<RealmImageInfo>{
+    private fun convertImageInfosToRealmImagesInfo(images: List<ImageInfo>): RealmList<RealmImageInfo> {
         var realmList = RealmList<RealmImageInfo>()
         for(image in images){
             var realmImageInfo = RealmImageInfo()
@@ -74,18 +98,5 @@ class RealmConverter {
         realm.copyToRealm(realmList)
         return realmList
     }
-
-/*    private fun convertRealmRecipesToRecipes(realmRecipes: RealmList<RealmRecipe>) : List<Recipe>{
-
-        var recipes: List<Recipe> = ArrayList<Recipe>()
-        for(realmRecipe in realmRecipes){
-            var imagesInfo: List<ImageInfo> = ArrayList<ImageInfo>()
-            for(realmImageInfo in realmRecipe.images){
-                var imageInfo = ImageInfo(realmImageInfo.imboId, realmImageInfo.url)
-                imagesInfo.add
-            }
-            var recipe = Recipe(realmRecipe.title!!, realmRecipe.description!!, realmRecipe.id!!, realmRecipe.images!! )
-        }
-    }*/
 
 }

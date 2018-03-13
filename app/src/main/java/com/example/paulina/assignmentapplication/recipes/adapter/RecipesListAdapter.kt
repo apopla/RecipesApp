@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
@@ -30,7 +31,7 @@ class RecipesListAdapter @Inject constructor(val context: Context) : RecyclerVie
     private var recipesList: MutableList<RealmRecipe> = mutableListOf()
 
     fun setRecipesList(recipesList: List<RealmRecipe>) {
-        if(!this.recipesList.isEmpty()) this.recipesList.clear()
+        if (!this.recipesList.isEmpty()) this.recipesList.clear()
         this.recipesList.addAll(recipesList)
         notifyDataSetChanged()
     }
@@ -42,9 +43,9 @@ class RecipesListAdapter @Inject constructor(val context: Context) : RecyclerVie
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecipesViewHolder {
-        return  RecipesViewHolder(LayoutInflater.from(parent?.context)
-                .inflate(R.layout.item_recipe_list_layout, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipesViewHolder {
+        val v = parent.inflate(R.layout.item_recipe_list_layout)
+        return RecipesViewHolder(v)
     }
 
     override fun getItemCount(): Int = recipesList.size
@@ -60,37 +61,43 @@ class RecipesListAdapter @Inject constructor(val context: Context) : RecyclerVie
             itemView.title.text = item.title
             itemView.description.text = Html.fromHtml(item.description)
 
-            if(!item.ingredients!!.isEmpty() && item.ingredients!=null){
+            if (!(item.ingredients!!.isEmpty() || item.ingredients == null)) {
                 var ingrText = ""
-                for (ingredient in item.ingredients!!) {
-                    ingrText += ingredient.name + " "
-                }
-                if(ingrText.trim().isEmpty()){
+                for (ingredient in item.ingredients!!) ingrText += ingredient.name + " "
+                if (ingrText.trim().isEmpty()) {
                     itemView.ingredients.visibility = View.GONE
-                }
-                else{
+                } else {
                     itemView.ingredients.text = ingrText
                 }
 
             }
 
-            if(!item.images!!.isEmpty() && item.images!!.first()!!.url != "") {
-                Glide.with(context).load(item.images!!.first()!!.url).into(itemView.image)
-                Glide.with(context)
-                        .load(item.images!!.first()!!.url)
-                        .listener(object : RequestListener<Drawable> {
-                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                            }
-                            override fun onResourceReady(p0: Drawable?, p1: Any?, target: com.bumptech.glide.request.target.Target<Drawable>?, dataSource: com.bumptech.glide.load.DataSource?, p4: Boolean): Boolean {
-                                return false
-                            }
-                        })
-                        .into(itemView.image)
+            if (!item.images!!.isEmpty() && item.images!!.first()!!.url != "") {
+                itemView.image.loadUrl(item.images!!.first()!!.url)
                 itemView.image.visibility = View.VISIBLE
             }
 
         }
+    }
+
+    fun ViewGroup.inflate(layoutRes: Int): View {
+        return LayoutInflater.from(context).inflate(layoutRes, this, false)
+    }
+
+    fun ImageView.loadUrl(url: String?) {
+        Glide.with(context).load(url).into(this)
+        Glide.with(context)
+                .load(url)
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
+                    override fun onResourceReady(p0: Drawable?, p1: Any?, target: com.bumptech.glide.request.target.Target<Drawable>?, dataSource: com.bumptech.glide.load.DataSource?, p4: Boolean): Boolean {
+                        return false
+                    }
+                })
+                .into(this)
     }
 
 

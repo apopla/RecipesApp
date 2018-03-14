@@ -23,7 +23,7 @@ class RecipesProvider @Inject constructor(var networkService: NetworkService, va
 
     override fun getRecepiesFromDb(): Single<List<RealmRecipe>> = realmProvider.getRecipesFromDb()
 
-    override fun getRecipesByFrazeFromDb(fraze: String): Observable<RealmRecipes> = realmProvider.getRecipesFromDbByFraze(fraze)
+    override fun getRecipesByFrazeFromDb(fraze: String): List<RealmRecipe> = realmProvider.getRecipesFromDbByFraze(fraze)
 
     override fun checkIfDbIsEmpty(): Boolean {
        return realmProvider.checkIfDbIsEmpty()

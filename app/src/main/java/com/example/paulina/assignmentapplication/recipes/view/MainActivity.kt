@@ -16,6 +16,7 @@ import com.jakewharton.rxbinding2.widget.textChanges
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.toObservable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.concurrent.TimeUnit
@@ -94,14 +95,13 @@ class MainActivity : AppCompatActivity(), RecipeContract.View {
         searchDisposable = recipes_list_search_edit_text
                 .textChanges()
                 .skip(1)
-                .debounce(300, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-                .map { it.toString() }
+                .debounce(300, TimeUnit.MILLISECONDS, Schedulers.io())
                 .doOnNext { showLoader(true) }
                 .flatMap {
-                    Log.d(TAG, it)
-                    presenter.searchRecipes(it).subscribeOn(Schedulers.io())
-
+                    Log.d(TAG, it.toString())
+                    presenter.searchRecipes(it.toString()).toObservable()
                 }
+                //add parsing realmObjects to objects and than toList and than subscribe to that list and refresh adapter
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnEach {
                     showContent()

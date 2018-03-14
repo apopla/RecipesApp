@@ -33,14 +33,13 @@ class RecipesRealmProvider @Inject constructor(){
         return results==null || results.isEmpty()
     }
 
-    fun getRecipesFromDbByFraze(fraze: String): Observable<RealmRecipes>{
+    fun getRecipesFromDbByFraze(fraze: String): List<RealmRecipe>{
         val resultsByTitle = realm.where(RealmRecipe::class.java).contains("title", fraze, Case.INSENSITIVE).findAll()
         val resultsByIngredient = realm.where(RealmRecipe::class.java).contains("ingredients.name", fraze, Case.INSENSITIVE).findAll()
         var combined = ArrayList<RealmRecipe>()
         combined.addAll(resultsByIngredient.toList())
         combined.addAll(resultsByTitle.toList())
-        var realmRecipes = RealmRecipes(combined)
-        return Observable.just(realmRecipes)
+        return combined
     }
 
     fun saveRecipesToRealmRecipes(recipes: List<Recipe>): Completable {

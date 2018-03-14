@@ -22,13 +22,13 @@ interface RecipeContract {
         fun attachView(view: View)
         fun detachView()
         fun getRecipes()
-        fun searchRecipes(fraze: String) : Observable<RealmRecipes>
+        fun searchRecipes(fraze: String) : List<RealmRecipe>
     }
 
     interface Provider {
         fun getRecipes(): Single<List<Recipe>>
         fun getRecepiesFromDb() : Single<List<RealmRecipe>>
-        fun getRecipesByFrazeFromDb(fraze: String): Observable<RealmRecipes>
+        fun getRecipesByFrazeFromDb(fraze: String): List<RealmRecipe>
         fun checkIfDbIsEmpty() : Boolean
         fun saveRecipesToDb(recipes: List<Recipe>): Completable
     }

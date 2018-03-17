@@ -13,7 +13,7 @@ import io.reactivex.Single
 interface RecipeContract {
 
     interface View {
-        fun setAdapterWithData(recipeList: List<RealmRecipe>)
+        fun setAdapterWithData(recipeList: List<Recipe>)
         fun showError(errorMessage: String)
         fun showLoader(show: Boolean)
     }
@@ -23,6 +23,7 @@ interface RecipeContract {
         fun detachView()
         fun getRecipes()
         fun searchRecipes(fraze: String) : List<RealmRecipe>
+
     }
 
     interface Provider {
@@ -30,7 +31,8 @@ interface RecipeContract {
         fun getRecepiesFromDb() : Single<List<RealmRecipe>>
         fun getRecipesByFrazeFromDb(fraze: String): List<RealmRecipe>
         fun checkIfDbIsEmpty() : Boolean
-        fun saveRecipesToDb(recipes: List<Recipe>): Completable
+        fun saveRecipesToDb(recipes: List<Recipe>)
+        fun getRecipesFromRealmRecipes(realmRecipes: List<RealmRecipe>) : List<Recipe>
     }
 
 }

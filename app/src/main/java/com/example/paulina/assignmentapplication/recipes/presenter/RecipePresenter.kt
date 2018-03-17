@@ -1,10 +1,10 @@
 package com.example.paulina.assignmentapplication.recipes.presenter
 
+import android.util.AndroidException
 import android.util.Log
 import com.example.paulina.assignmentapplication.recipes.contract.RecipeContract
-import com.example.paulina.assignmentapplication.recipes.provider.RecipesProvider
 import com.example.paulina.assignmentapplication.recipes.realm_model.RealmRecipe
-import com.example.paulina.assignmentapplication.recipes.realm_model.RealmRecipes
+import com.example.paulina.assignmentapplication.recipes.repository.RecipeRepository
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -20,7 +20,7 @@ class RecipePresenter @Inject constructor() : RecipeContract.Presenter {
 
     private var view: RecipeContract.View? = null
     @Inject
-    lateinit var provider: RecipesProvider
+    lateinit var repository: RecipeRepository
 
     private var recipesDisposable: Disposable? = null
 
@@ -35,40 +35,22 @@ class RecipePresenter @Inject constructor() : RecipeContract.Presenter {
 
     override fun searchRecipes(fraze: String): List<RealmRecipe> {
         Log.d("Presenter", fraze)
-        return provider.getRecipesByFrazeFromDb(fraze)
+       /* return repository.getRecipesByFrazeFromDb(fraze)*/
+        return listOf()
     }
 
-    override fun getRecipes() {
-        recipesDisposable = provider.getRecipes()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { view?.showLoader(true) }
-                .subscribe({ r ->
-                    provider.saveRecipesToDb(r)
-                            .subscribeOn(AndroidSchedulers.mainThread())
-                            .subscribe {
-                                provider.getRecepiesFromDb()
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(
-                                                { r -> view?.setAdapterWithData(r) },
-                                                { e -> handleError(e) }
-                                        )
-                            }
 
-                }, { e ->
-                    if (provider.checkIfDbIsEmpty()) {
-                        handleError(e)
-                    } else {
-                        provider.getRecepiesFromDb()
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(
-                                        { r -> view?.setAdapterWithData(r) },
-                                        { e -> handleError(e) }
-                                )
-                    }
-                })
+    override fun getRecipes(){
+       repository.getRecipse()
+               .subscribeOn(Schedulers.io())
+               .observeOn(AndroidSchedulers.mainThread())
+               .subscribe(
+                       {view?.setAdapterWithData(it)},
+                       { handleError(it) }
+               )
+
     }
+
 
     fun handleError(cause: Throwable) {
         view?.showError(cause.localizedMessage)

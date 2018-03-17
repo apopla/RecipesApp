@@ -1,7 +1,7 @@
 package com.example.paulina.assignmentapplication.recipes.view
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.View
@@ -10,13 +10,11 @@ import com.example.paulina.assignmentapplication.R
 import com.example.paulina.assignmentapplication.recipes.adapter.RecipesListAdapter
 import com.example.paulina.assignmentapplication.recipes.contract.RecipeContract
 import com.example.paulina.assignmentapplication.recipes.di.RecipesModule
+import com.example.paulina.assignmentapplication.recipes.model.Recipe
 import com.example.paulina.assignmentapplication.recipes.presenter.RecipePresenter
-import com.example.paulina.assignmentapplication.recipes.realm_model.RealmRecipe
 import com.jakewharton.rxbinding2.widget.textChanges
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.rxkotlin.toObservable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.concurrent.TimeUnit
@@ -54,7 +52,7 @@ class MainActivity : AppCompatActivity(), RecipeContract.View {
                 .inject(this)
     }
 
-    override fun setAdapterWithData(recipeList: List<RealmRecipe>) {
+    override fun setAdapterWithData(recipeList: List<Recipe>) {
         recipes_list_recycler.setHasFixedSize(true)
         recipes_list_recycler.isLayoutFrozen = true
         recipes_list_recycler.layoutManager = LinearLayoutManager(applicationContext)
@@ -77,7 +75,7 @@ class MainActivity : AppCompatActivity(), RecipeContract.View {
     override fun showLoader(show: Boolean) {
         recipes_list_recycler.visibility = View.INVISIBLE
         message_tv.visibility = View.INVISIBLE
-        recipes_list_search_edit_text.visibility = View.INVISIBLE
+        recipes_list_search_edit_text.visibility = View.VISIBLE
         recipes_list_progress_bar.visibility = View.VISIBLE
     }
 
@@ -95,13 +93,13 @@ class MainActivity : AppCompatActivity(), RecipeContract.View {
         searchDisposable = recipes_list_search_edit_text
                 .textChanges()
                 .skip(1)
+                .doOnEach { showLoader(true) }
                 .debounce(300, TimeUnit.MILLISECONDS, Schedulers.io())
-                .doOnNext { showLoader(true) }
-                .flatMap {
+                .map {
                     Log.d(TAG, it.toString())
-                    presenter.searchRecipes(it.toString()).toObservable()
+                    Log.d(TAG, "first map search thread:" + Thread.currentThread().name)
+                    //presenter.getRecipesFromRealmRecipes(presenter.searchRecipes(it.toString()))
                 }
-                //add parsing realmObjects to objects and than toList and than subscribe to that list and refresh adapter
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnEach {
                     showContent()
@@ -111,7 +109,7 @@ class MainActivity : AppCompatActivity(), RecipeContract.View {
                 .retry()
                 .subscribe({
                     if (it != null) {
-                        adapter.updateRecipes(it.recipes!!)
+                        //adapter.updateRecipes(it.toMutableList())
                     } else showError("No data")
                 }, {
                     Log.e(TAG, "error while subscribe")

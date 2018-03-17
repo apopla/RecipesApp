@@ -6,9 +6,9 @@ import io.realm.RealmObject
  * Created by Paulina on 2018-03-09.
  */
 open class RealmElement : RealmObject() {
-    var id: Long? = null
+    var id: Long = 0L
 
-    var name: String? = null
+    var name: String = ""
 
 
 }

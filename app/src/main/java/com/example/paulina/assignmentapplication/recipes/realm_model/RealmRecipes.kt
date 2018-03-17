@@ -5,6 +5,6 @@ package com.example.paulina.assignmentapplication.recipes.realm_model
  */
 class RealmRecipes(recipes: List<RealmRecipe>) {
 
-    var recipes: List<RealmRecipe>? = recipes
+    var recipes: List<RealmRecipe> = recipes
 
 }

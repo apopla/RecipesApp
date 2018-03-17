@@ -1,10 +1,9 @@
 package com.example.paulina.assignmentapplication.recipes.di
 
 import android.content.Context
-import com.example.paulina.assignmentapplication.recipes.adapter.RecipesListAdapter
 import com.example.paulina.assignmentapplication.recipes.contract.RecipeContract
 import com.example.paulina.assignmentapplication.recipes.presenter.RecipePresenter
-import com.example.paulina.assignmentapplication.recipes.provider.RecipesProvider
+import com.example.paulina.assignmentapplication.recipes.repository.RecipeRepository
 import com.example.paulina.assignmentapplication.recipes.view.MainActivity
 import dagger.Module
 import dagger.Provides
@@ -21,9 +20,6 @@ class RecipesModule(private val activity: MainActivity) {
 
     @Provides
     fun providePresenter(impl: RecipePresenter): RecipeContract.Presenter= impl
-
-    @Provides
-    fun provideProvider(impl: RecipesProvider): RecipeContract.Provider = impl
 
     @Provides
     fun provideActivity() = activity

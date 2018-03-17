@@ -9,12 +9,12 @@ import io.realm.RealmObject
  * Created by Paulina on 2018-03-09.
  */
 open class RealmRecipe : RealmObject() {
-    var id: Long? = null
+    var id: Long = 0L
 
-    var title: String? = null
-    var description: String? = null
+    var title: String = ""
+    var description: String = ""
 
-    var images: RealmList<RealmImageInfo>? = null
-    var ingredients: RealmList<RealmIngredient>? = null
+    var images: RealmList<RealmImageInfo> = RealmList<RealmImageInfo>()
+    var ingredients: RealmList<RealmIngredient> = RealmList<RealmIngredient>()
 
 }

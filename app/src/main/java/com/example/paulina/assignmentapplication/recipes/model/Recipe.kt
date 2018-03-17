@@ -1,5 +1,7 @@
 package com.example.paulina.assignmentapplication.recipes.model
 
+import io.realm.RealmObject
+
 /**
  * Created by Paulina on 2018-03-08.
  */

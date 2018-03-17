@@ -16,11 +16,7 @@ import com.example.paulina.assignmentapplication.R
 import com.example.paulina.assignmentapplication.recipes.model.Recipe
 import kotlinx.android.synthetic.main.item_recipe_list_layout.view.*
 import javax.inject.Inject
-import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import com.example.paulina.assignmentapplication.recipes.realm_model.RealmRecipe
-import io.realm.Realm
-import javax.sql.DataSource
 
 
 /**
@@ -28,18 +24,17 @@ import javax.sql.DataSource
  */
 class RecipesListAdapter @Inject constructor(val context: Context) : RecyclerView.Adapter<RecipesListAdapter.RecipesViewHolder>() {
 
-    private var recipesList: MutableList<RealmRecipe> = mutableListOf()
+    private var recipesList: MutableList<Recipe> = mutableListOf()
 
-    fun setRecipesList(recipesList: List<RealmRecipe>) {
+    fun setRecipesList(recipesList: List<Recipe>) {
         if (!this.recipesList.isEmpty()) this.recipesList.clear()
         this.recipesList.addAll(recipesList)
         notifyDataSetChanged()
     }
 
-    fun updateRecipes(recipesList: List<RealmRecipe>) {
-        val realm = Realm.getDefaultInstance()
-
-        this.recipesList = realm.copyFromRealm(recipesList)
+    fun updateRecipes(recipesList: MutableList<Recipe>) {
+        if (!this.recipesList.isEmpty()) this.recipesList.clear()
+        this.recipesList.addAll(recipesList)
         notifyDataSetChanged()
     }
 
@@ -57,11 +52,11 @@ class RecipesListAdapter @Inject constructor(val context: Context) : RecyclerVie
 
     inner class RecipesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(item: RealmRecipe) {
+        fun bind(item: Recipe) {
             itemView.title.text = item.title
             itemView.description.text = Html.fromHtml(item.description)
 
-            if (!(item.ingredients!!.isEmpty() || item.ingredients == null)) {
+            if (!(item.ingredients.isEmpty())) {
                 var ingrText = ""
                 for (ingredient in item.ingredients!!) ingrText += ingredient.name + " "
                 if (ingrText.trim().isEmpty()) {

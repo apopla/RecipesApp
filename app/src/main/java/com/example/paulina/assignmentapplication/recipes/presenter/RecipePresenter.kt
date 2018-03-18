@@ -1,11 +1,9 @@
 package com.example.paulina.assignmentapplication.recipes.presenter
 
-import android.util.AndroidException
 import android.util.Log
 import com.example.paulina.assignmentapplication.recipes.contract.RecipeContract
-import com.example.paulina.assignmentapplication.recipes.realm_model.RealmRecipe
+import com.example.paulina.assignmentapplication.recipes.model.Recipe
 import com.example.paulina.assignmentapplication.recipes.repository.RecipeRepository
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -33,10 +31,9 @@ class RecipePresenter @Inject constructor() : RecipeContract.Presenter {
         this.view = view
     }
 
-    override fun searchRecipes(fraze: String): List<RealmRecipe> {
+    override fun searchRecipes(fraze: String): List<Recipe> {
         Log.d("Presenter", fraze)
-       /* return repository.getRecipesByFrazeFromDb(fraze)*/
-        return listOf()
+      return repository.getRecipesFromDbByFraze(fraze)
     }
 
 

@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity(), RecipeContract.View {
                 .map {
                     Log.d(TAG, it.toString())
                     Log.d(TAG, "first map search thread:" + Thread.currentThread().name)
-                    //presenter.getRecipesFromRealmRecipes(presenter.searchRecipes(it.toString()))
+                    presenter.searchRecipes(it.toString())
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnEach {
@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity(), RecipeContract.View {
                 .retry()
                 .subscribe({
                     if (it != null) {
-                        //adapter.updateRecipes(it.toMutableList())
+                        adapter.updateRecipes(it.toMutableList())
                     } else showError("No data")
                 }, {
                     Log.e(TAG, "error while subscribe")

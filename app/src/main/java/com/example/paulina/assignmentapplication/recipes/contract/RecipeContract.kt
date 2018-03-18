@@ -22,17 +22,9 @@ interface RecipeContract {
         fun attachView(view: View)
         fun detachView()
         fun getRecipes()
-        fun searchRecipes(fraze: String) : List<RealmRecipe>
+        fun searchRecipes(fraze: String) : List<Recipe>
 
     }
 
-    interface Provider {
-        fun getRecipes(): Single<List<Recipe>>
-        fun getRecepiesFromDb() : Single<List<RealmRecipe>>
-        fun getRecipesByFrazeFromDb(fraze: String): List<RealmRecipe>
-        fun checkIfDbIsEmpty() : Boolean
-        fun saveRecipesToDb(recipes: List<Recipe>)
-        fun getRecipesFromRealmRecipes(realmRecipes: List<RealmRecipe>) : List<Recipe>
-    }
 
 }

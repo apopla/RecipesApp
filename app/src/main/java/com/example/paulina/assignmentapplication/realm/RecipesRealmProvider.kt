@@ -52,20 +52,18 @@ class RecipesRealmProvider @Inject constructor() {
         return getRecipesFromRealmRecipes(results)
     }
 
-    fun checkIfDbIsEmpty(): Boolean {
-        realm = Realm.getDefaultInstance()
-        val results = realm.where(RealmRecipe::class.java).findAll()
-        return results == null || results.isEmpty()
-    }
-
-    fun getRecipesFromDbByFraze(fraze: String): List<RealmRecipe> {
+    fun getRecipesFromDbByFraze(fraze: String): List<Recipe> {
         realm = Realm.getDefaultInstance()
         val resultsByTitle = realm.where(RealmRecipe::class.java).contains("title", fraze, Case.INSENSITIVE).findAll()
         val resultsByIngredient = realm.where(RealmRecipe::class.java).contains("ingredients.name", fraze, Case.INSENSITIVE).findAll()
         var combined = ArrayList<RealmRecipe>()
         combined.addAll(resultsByIngredient.toList())
-        combined.addAll(resultsByTitle.toList())
-        return combined
+        for(realmRecipe in resultsByTitle){
+            if(!resultsByIngredient.contains(realmRecipe)){
+                combined.add(realmRecipe)
+            }
+        }
+        return getRecipesFromRealmRecipes(combined)
     }
 
     fun saveRecipesToRealmRecipes(recipes: List<Recipe>) {

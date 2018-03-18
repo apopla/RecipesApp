@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.paulina.assignmentapplication.network.NetworkService
 import com.example.paulina.assignmentapplication.realm.RecipesRealmProvider
 import com.example.paulina.assignmentapplication.recipes.model.Recipe
+import com.example.paulina.assignmentapplication.recipes.realm_model.RealmRecipe
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
@@ -31,7 +32,7 @@ class RecipeRepository @Inject constructor(var networkService: NetworkService, v
 
     fun getUsersFromApi(): Observable<List<Recipe>> {
         Log.d ("RecipeRepository", "Thread get users from api: " + Thread.currentThread().name)
-        return networkService.getRecipes(0, 50, "", "thumbnail-medium")
+        return networkService.getRecipes(0, 5, "", "thumbnail-medium")
                 .doOnNext {
                     storeUsersInDb(it)
                 }
@@ -43,6 +44,10 @@ class RecipeRepository @Inject constructor(var networkService: NetworkService, v
         Log.d ("RecipeRepository", "Thread store in db: " + Thread.currentThread().name)
         Observable.fromCallable { realmProvider.saveRecipesToRealmRecipes(recipes) }
                 .subscribe()
+    }
+
+    fun getRecipesFromDbByFraze(fraze: String): List<Recipe> {
+        return realmProvider.getRecipesFromDbByFraze(fraze)
     }
 
 }

@@ -39,6 +39,10 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    testCompile 'org.mockito:mockito-core:2.10.0'
+    androidTestCompile 'org.mockito:mockito-android:2.7.22'
+    testCompile group: 'org.mockito', name: 'mockito-inline', version: '2.8.9'
+    testCompile 'com.nhaarman:mockito-kotlin:1.5.0'
 
     compile 'org.jetbrains.kotlin:kotlin-reflect:1.2.21'
 
@@ -58,5 +62,6 @@ dependencies {
     compile 'com.google.dagger:dagger:2.11'
 
     kapt 'com.google.dagger:dagger-compiler:2.11'
+    kaptAndroidTest 'com.google.dagger:dagger-compiler:2.11'
 
 }

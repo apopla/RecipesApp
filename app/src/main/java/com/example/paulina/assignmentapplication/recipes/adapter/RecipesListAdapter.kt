@@ -32,7 +32,7 @@ class RecipesListAdapter @Inject constructor(val context: Context) : RecyclerVie
         notifyDataSetChanged()
     }
 
-    fun updateRecipes(recipesList: MutableList<Recipe>) {
+    fun updateRecipes(recipesList: List<Recipe>) {
         if (!this.recipesList.isEmpty()) this.recipesList.clear()
         this.recipesList.addAll(recipesList)
         notifyDataSetChanged()

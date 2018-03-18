@@ -15,11 +15,12 @@ import javax.inject.Inject
  */
 class RecipeRepository @Inject constructor(var networkService: NetworkService, var realmProvider: RecipesRealmProvider) {
 
-    fun getRecipse(): Maybe<List<Recipe>> {
+    fun getRecipse(): Observable<List<Recipe>> {
         return Observable.concat(
                 getUsersFromDb(),
                 getUsersFromApi()
                 ).firstElement()
+                .toObservable()
     }
 
 
@@ -31,7 +32,6 @@ class RecipeRepository @Inject constructor(var networkService: NetworkService, v
     }
 
     fun getUsersFromApi(): Observable<List<Recipe>> {
-        Log.d ("RecipeRepository", "Thread get users from api: " + Thread.currentThread().name)
         return networkService.getRecipes(0, 5, "", "thumbnail-medium")
                 .doOnNext {
                     storeUsersInDb(it)
@@ -41,7 +41,6 @@ class RecipeRepository @Inject constructor(var networkService: NetworkService, v
     }
 
     fun storeUsersInDb(recipes: List<Recipe>) {
-        Log.d ("RecipeRepository", "Thread store in db: " + Thread.currentThread().name)
         Observable.fromCallable { realmProvider.saveRecipesToRealmRecipes(recipes) }
                 .subscribe()
     }

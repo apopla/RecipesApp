@@ -14,6 +14,7 @@ interface RecipeContract {
 
     interface View {
         fun setAdapterWithData(recipeList: List<Recipe>)
+        fun refreshAdapterWithData(recipeList: List<Recipe>)
         fun showError(errorMessage: String)
         fun showLoader(show: Boolean)
     }

@@ -62,6 +62,10 @@ class MainActivity : AppCompatActivity(), RecipeContract.View {
         initSearch()
     }
 
+    override fun refreshAdapterWithData(recipeList: List<Recipe>) {
+        adapter.updateRecipes(recipeList)
+    }
+
 
     override fun showError(errorMessage: String) {
         message_tv.text = errorMessage
@@ -109,7 +113,7 @@ class MainActivity : AppCompatActivity(), RecipeContract.View {
                 .retry()
                 .subscribe({
                     if (it != null) {
-                        adapter.updateRecipes(it.toMutableList())
+                        refreshAdapterWithData(it)
                     } else showError("No data")
                 }, {
                     Log.e(TAG, "error while subscribe")

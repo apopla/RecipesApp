@@ -6,7 +6,7 @@ import io.realm.RealmObject
  * Created by Paulina on 2018-03-08.
  */
 
-data class Recipe (val title: String = "", val description: String = "", val id: Long = 0L, val images: List<ImageInfo>, val ingredients: List<Ingredient>)
+data class Recipe (val title: String = "", val description: String = "", val id: Long = 0L, val images: List<ImageInfo> = listOf(), val ingredients: List<Ingredient> = listOf())
 
 data class Ingredient (val id: Long = 0L, val name: String = "", val elements: List<Element>)
 

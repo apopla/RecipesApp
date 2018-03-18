@@ -14,11 +14,9 @@ import javax.inject.Inject
  */
 
 
-class RecipePresenter @Inject constructor() : RecipeContract.Presenter {
+class RecipePresenter @Inject constructor(var repository: RecipeRepository) : RecipeContract.Presenter {
 
     private var view: RecipeContract.View? = null
-    @Inject
-    lateinit var repository: RecipeRepository
 
     private var recipesDisposable: Disposable? = null
 
@@ -32,13 +30,12 @@ class RecipePresenter @Inject constructor() : RecipeContract.Presenter {
     }
 
     override fun searchRecipes(fraze: String): List<Recipe> {
-        Log.d("Presenter", fraze)
       return repository.getRecipesFromDbByFraze(fraze)
     }
 
 
     override fun getRecipes(){
-       repository.getRecipse()
+       recipesDisposable = repository.getRecipse()
                .subscribeOn(Schedulers.io())
                .observeOn(AndroidSchedulers.mainThread())
                .subscribe(
